@@ -313,6 +313,10 @@
     <script>
         // already fil aaki vechind roll nos
         let participants = Array.from({length: 68}, (_, i) => (i + 1).toString());
+        // Remove 27 and add 69
+        participants = participants.filter(p => p !== "27");
+        participants.push("69");
+        
         let givers = [...participants];
         let receivers = [...participants];
         let currentGiver = null;
