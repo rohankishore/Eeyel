@@ -45,8 +45,44 @@
 
         #gamePanel {
             display: none;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .giver-list-container {
+            width: 200px;
+            max-height: 600px;
+            overflow-y: auto;
+            border-right: 1px solid #ddd;
+            padding-right: 10px;
+        }
+
+        .wheel-container {
+            flex: 1;
+            display: flex;
             flex-direction: column;
             align-items: center;
+        }
+
+        .giver-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .giver-item:hover {
+            background: #e0e0e0;
+        }
+
+        .giver-item.selected {
+            background: #27ae60;
+            color: white;
+            border-color: #219150;
         }
 
         input[type="text"] {
@@ -143,7 +179,7 @@
             text-shadow: 0 0 1px #000;
         }
 
-        /* Snow animation */
+        /* nee aal kollalo da mwone*/
         @-webkit-keyframes snowflakes-fall{0%{top:-10%}100%{top:100%}}@-webkit-keyframes snowflakes-shake{0%{-webkit-transform:translateX(0px);transform:translateX(0px)}50%{-webkit-transform:translateX(80px);transform:translateX(80px)}100%{-webkit-transform:translateX(0px);transform:translateX(0px)}}@keyframes snowflakes-fall{0%{top:-10%}100%{top:100%}}@keyframes snowflakes-shake{0%{transform:translateX(0px)}50%{transform:translateX(80px)}100%{transform:translateX(0px)}}.snowflake{position:fixed;top:-10%;z-index:9999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default;-webkit-animation-name:snowflakes-fall,snowflakes-shake;-webkit-animation-duration:10s,3s;-webkit-animation-timing-function:linear,ease-in-out;-webkit-animation-iteration-count:infinite,infinite;-webkit-animation-play-state:running,running;animation-name:snowflakes-fall,snowflakes-shake;animation-duration:10s,3s;animation-timing-function:linear,ease-in-out;animation-iteration-count:infinite,infinite;animation-play-state:running,running}.snowflake:nth-of-type(0){left:1%;-webkit-animation-delay:0s,0s;animation-delay:0s,0s}.snowflake:nth-of-type(1){left:10%;-webkit-animation-delay:1s,1s;animation-delay:1s,1s}.snowflake:nth-of-type(2){left:20%;-webkit-animation-delay:6s,.5s;animation-delay:6s,.5s}.snowflake:nth-of-type(3){left:30%;-webkit-animation-delay:4s,2s;animation-delay:4s,2s}.snowflake:nth-of-type(4){left:40%;-webkit-animation-delay:2s,2s;animation-delay:2s,2s}.snowflake:nth-of-type(5){left:50%;-webkit-animation-delay:8s,3s;animation-delay:8s,3s}.snowflake:nth-of-type(6){left:60%;-webkit-animation-delay:6s,2s;animation-delay:6s,2s}.snowflake:nth-of-type(7){left:70%;-webkit-animation-delay:2.5s,1s;animation-delay:2.5s,1s}.snowflake:nth-of-type(8){left:80%;-webkit-animation-delay:1s,0s;animation-delay:1s,0s}.snowflake:nth-of-type(9){left:90%;-webkit-animation-delay:3s,1.5s;animation-delay:3s,1.5s}
     </style>
 </head>
@@ -152,10 +188,9 @@
         <div class="snowflake">❅</div><div class="snowflake">❅</div><div class="snowflake">❆</div><div class="snowflake">❄</div><div class="snowflake">❅</div><div class="snowflake">❆</div><div class="snowflake">❄</div><div class="snowflake">❅</div><div class="snowflake">❆</div><div class="snowflake">❄</div>
     </div>
 
-    <h1>🎄 Christmas Prize Exchange 🎁</h1>
+    <h1> Aa Wheel Onn Karakk Chengayii 🎁</h1>
 
     <div class="container">
-        <!-- Setup Panel -->
         <div id="setupPanel" class="panel">
             <h2>Add Participants</h2>
             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
@@ -170,27 +205,27 @@
             <button onclick="startGame()" style="width: 100%; margin-top: 20px; background-color: #c0392b;">Start Exchange</button>
         </div>
 
-        <!-- Game Panel -->
+        <!-- Entha bro nee comment okke check aakane -->
         <div id="gamePanel" class="panel">
-            <h2>Spin the Wheel!</h2>
-            
-            <div style="width: 100%; margin-bottom: 20px;">
-                <label for="giverSelect"><strong>Who is spinning? (The Giver)</strong></label>
-                <select id="giverSelect" onchange="updateWheelForGiver()">
-                    <option value="">-- Select a Name --</option>
-                </select>
+            <div class="giver-list-container">
+                <h3>Select Giver:</h3>
+                <div id="giverList"></div>
             </div>
 
-            <div style="position: relative;">
-                <canvas id="wheelCanvas" width="500" height="500"></canvas>
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid #c0392b; margin-top: -230px; z-index: 10;"></div>
-            </div>
+            <div class="wheel-container">
+                <h2>Spin the Wheel!</h2>
+                
+                <div style="position: relative;">
+                    <canvas id="wheelCanvas" width="500" height="500"></canvas>
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 35px solid #c0392b; margin-top: -230px; z-index: 10;"></div>
+                </div>
 
-            <button id="spinBtn" onclick="spinWheel()" disabled style="font-size: 20px; padding: 15px 40px;">SPIN!</button>
-            
-            <div style="margin-top: 20px;">
-                <h3>History:</h3>
-                <ul id="historyList"></ul>
+                <button id="spinBtn" onclick="spinWheel()" disabled style="font-size: 20px; padding: 15px 40px;">SPIN!</button>
+                
+                <div style="margin-top: 20px; width: 100%;">
+                    <h3>History:</h3>
+                    <ul id="historyList"></ul>
+                </div>
             </div>
         </div>
     </div>
@@ -254,7 +289,7 @@
             if (addedCount > 0) {
                 renderNameList();
                 textarea.value = '';
-                // Optional: alert(`Added ${addedCount} participants!`);
+                // ivde nokanda onnum illaaa
             }
         }
 
@@ -285,32 +320,24 @@
             document.getElementById('setupPanel').style.display = 'none';
             document.getElementById('gamePanel').style.display = 'flex';
             
-            updateGiverSelect();
+            renderGiverList();
             drawWheel();
         }
 
-        function updateGiverSelect() {
-            const select = document.getElementById('giverSelect');
-            select.innerHTML = '<option value="">-- Select a Name --</option>' + 
-                givers.map(g => `<option value="${g}">${g}</option>`).join('');
-            
-            document.getElementById('spinBtn').disabled = true;
+        function renderGiverList() {
+            const list = document.getElementById('giverList');
+            list.innerHTML = givers.map(g => `
+                <div class="giver-item ${currentGiver === g ? 'selected' : ''}" onclick="selectGiver('${g}')">
+                    ${g}
+                </div>
+            `).join('');
         }
 
-        function updateWheelForGiver() {
-            const select = document.getElementById('giverSelect');
-            currentGiver = select.value;
-            document.getElementById('spinBtn').disabled = !currentGiver;
-            
-            // We redraw the wheel. 
-            // Note: The user said "exclude selected guy from list (but not from wheel)".
-            // However, you can't give to yourself. 
-            // So visually we might want to show everyone, but if it lands on self, we respin?
-            // Or we can just filter them out of the wheel for this turn to avoid awkward "You got yourself" moments.
-            // Let's try to keep them on the wheel if possible, but for logic sake, it's better to filter them out 
-            // so the spin is always valid. 
-            // BUT, strictly following "not from wheel", I will include them and handle the collision.
-            
+        function selectGiver(name) {
+            if (isSpinning) return;
+            currentGiver = name;
+            renderGiverList();
+            document.getElementById('spinBtn').disabled = false;
             drawWheel();
         }
 
@@ -407,10 +434,12 @@
             
             isSpinning = true;
             document.getElementById('spinBtn').disabled = true;
-            document.getElementById('giverSelect').disabled = true;
+            // Disable giver selection during spin
+            const items = document.querySelectorAll('.giver-item');
+            items.forEach(item => item.style.pointerEvents = 'none');
             
             spinTime = 0;
-            spinTimeTotal = Math.random() * 3000 + 4000; // 4-7 seconds
+            spinTimeTotal = Math.random() * 2000 + 2000; // 2-4 seconds
             rotateWheel();
         }
 
@@ -438,7 +467,7 @@
             
             const degrees = startAngle * 180 / Math.PI + 90;
             const arcd = 360 / wheelParticipants.length;
-            const index = Math.floor((360 - degrees % 360) / arcd);
+            const index = Math.floor((360 - degrees % 360) / arcd) % wheelParticipants.length;
             
             const winner = wheelParticipants[index];
             
@@ -477,11 +506,14 @@
 
         function closeModal() {
             document.getElementById('resultModal').style.display = 'none';
-            document.getElementById('giverSelect').disabled = false;
-            document.getElementById('giverSelect').value = "";
+            
+            // Re-enable selection
+            const items = document.querySelectorAll('.giver-item');
+            items.forEach(item => item.style.pointerEvents = 'auto');
+
             currentGiver = null;
             
-            updateGiverSelect();
+            renderGiverList();
             
             if (givers.length === 0) {
                 alert("Exchange Complete! Merry Christmas!");
