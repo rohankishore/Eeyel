@@ -416,6 +416,12 @@
             drawWheel();
         }
 
+        function resetWheel() {
+            const arcd = 2 * Math.PI / participants.length;
+            startAngle = -Math.PI/2 - arcd/2;
+            drawWheel();
+        }
+
         function drawWheel() {
             if (participants.length === 0) return;
 
@@ -581,13 +587,13 @@
                 alert("Exchange Complete! Merry Christmas!");
                 // Optional: Reset game
             } else {
-                drawWheel();
+                resetWheel();
             }
         }
 
         // Show the pre-filled list on load
         renderGiverList();
-        drawWheel();
+        resetWheel();
     </script>
 </body>
 </html>
