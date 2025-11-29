@@ -137,6 +137,82 @@
             border-radius: 50%;
             box-shadow: 0 0 10px rgba(0,0,0,0.2);
             margin: 20px 0;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            aspect-ratio: 1/1;
+            margin: 0 auto;
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #c0392b;
+            z-index: 10;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                text-align: center;
+            }
+
+            #gamePanel {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .giver-list-container {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+                padding-right: 0;
+                padding-bottom: 10px;
+                max-height: 200px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 5px;
+            }
+
+            .giver-item {
+                width: 45px;
+                height: 45px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 0;
+                padding: 0;
+                font-size: 14px;
+            }
+            
+            .panel {
+                min-width: auto;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 15px;
+            }
+
+            #spinBtn {
+                width: 100%;
+                padding: 15px;
+            }
         }
 
         select {
@@ -215,9 +291,9 @@
             <div class="wheel-container">
                 <h2>Spin the Wheel!</h2>
                 
-                <div style="position: relative;">
+                <div class="wheel-wrapper">
                     <canvas id="wheelCanvas" width="500" height="500"></canvas>
-                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 35px solid #c0392b; margin-top: -230px; z-index: 10;"></div>
+                    <div class="wheel-pointer"></div>
                 </div>
 
                 <button id="spinBtn" onclick="spinWheel()" disabled style="font-size: 20px; padding: 15px 40px;">SPIN!</button>
