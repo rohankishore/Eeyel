@@ -284,7 +284,7 @@
         <!-- Entha bro nee comment okke check aakane -->
         <div id="gamePanel" class="panel">
             <div class="giver-list-container">
-                <h3>Select Giver:</h3>
+                <h3>Gift Aara kodkaneeee:</h3>
                 <div id="giverList"></div>
             </div>
 
@@ -295,8 +295,6 @@
                     <canvas id="wheelCanvas" width="500" height="500"></canvas>
                     <div class="wheel-pointer"></div>
                 </div>
-                
-                <p id="wheelStatus" style="color: #7f8c8d; margin-top: 10px; font-style: italic;"></p>
 
                 <button id="spinBtn" onclick="spinWheel()" disabled style="font-size: 20px; padding: 15px 40px;">SPIN!</button>
             </div>
@@ -419,19 +417,11 @@
         }
 
         function drawWheel() {
-            if (receivers.length === 0) return;
+            if (participants.length === 0) return;
 
             // Show everyone in the wheel, even the giver
-            let wheelParticipants = receivers;
+            let wheelParticipants = participants;
             
-            // Update status text
-            const statusEl = document.getElementById('wheelStatus');
-            if (currentGiver) {
-                statusEl.innerText = `Wheel contains ${wheelParticipants.length} names`;
-            } else {
-                statusEl.innerText = "Select a giver to spin";
-            }
-
             arc = Math.PI * 2 / wheelParticipants.length;
             ctx.clearRect(0, 0, 500, 500);
             
@@ -479,7 +469,7 @@
             }
             
             const winner = validCandidates[Math.floor(Math.random() * validCandidates.length)];
-            const winnerIndex = receivers.indexOf(winner);
+            const winnerIndex = participants.indexOf(winner);
             
             isSpinning = true;
             document.getElementById('spinBtn').disabled = true;
@@ -487,7 +477,7 @@
             items.forEach(item => item.style.pointerEvents = 'none');
             
             // Calculate target angle to land on winner
-            const arcd = 360 / receivers.length;
+            const arcd = 360 / participants.length;
             // Randomize landing position within the segment (0.2 to 0.8 to stay away from edges)
             const randomOffset = 0.2 + Math.random() * 0.6; 
             const targetDegreeMod = 360 - (winnerIndex + randomOffset) * arcd;
@@ -537,7 +527,7 @@
             cancelAnimationFrame(spinTimeout);
             isSpinning = false;
             
-            let wheelParticipants = receivers;
+            let wheelParticipants = participants;
             
             const degrees = startAngle * 180 / Math.PI + 90;
             const arcd = 360 / wheelParticipants.length;
