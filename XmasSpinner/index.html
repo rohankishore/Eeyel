@@ -297,11 +297,6 @@
                 </div>
 
                 <button id="spinBtn" onclick="spinWheel()" disabled style="font-size: 20px; padding: 15px 40px;">SPIN!</button>
-                
-                <div style="margin-top: 20px; width: 100%;">
-                    <h3>History:</h3>
-                    <ul id="historyList"></ul>
-                </div>
             </div>
         </div>
     </div>
@@ -531,12 +526,6 @@
             
             // Remove winner from receivers list (they got a prize)
             receivers = receivers.filter(r => r !== winner);
-            
-            // Add to history
-            const historyList = document.getElementById('historyList');
-            const li = document.createElement('li');
-            li.innerHTML = `${currentGiver} ➔ ${winner}`;
-            historyList.appendChild(li);
         }
 
         function closeModal() {
