@@ -295,6 +295,8 @@
                     <canvas id="wheelCanvas" width="500" height="500"></canvas>
                     <div class="wheel-pointer"></div>
                 </div>
+                
+                <p id="wheelStatus" style="color: #7f8c8d; margin-top: 10px; font-style: italic;"></p>
 
                 <button id="spinBtn" onclick="spinWheel()" disabled style="font-size: 20px; padding: 15px 40px;">SPIN!</button>
             </div>
@@ -429,6 +431,14 @@
             if (wheelParticipants.length === 0 && receivers.length > 0) {
 
                 wheelParticipants = receivers; 
+            }
+
+            // Update status text
+            const statusEl = document.getElementById('wheelStatus');
+            if (currentGiver) {
+                statusEl.innerText = `Wheel contains ${wheelParticipants.length} names (Excluding ${currentGiver})`;
+            } else {
+                statusEl.innerText = "Select a giver to spin";
             }
 
             arc = Math.PI * 2 / wheelParticipants.length;
