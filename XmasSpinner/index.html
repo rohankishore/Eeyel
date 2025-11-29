@@ -421,22 +421,13 @@
         function drawWheel() {
             if (receivers.length === 0) return;
 
-           
+            // Show everyone in the wheel, even the giver
             let wheelParticipants = receivers;
-            if (currentGiver) {
-                wheelParticipants = receivers.filter(r => r !== currentGiver);
-            }
             
-            
-            if (wheelParticipants.length === 0 && receivers.length > 0) {
-
-                wheelParticipants = receivers; 
-            }
-
             // Update status text
             const statusEl = document.getElementById('wheelStatus');
             if (currentGiver) {
-                statusEl.innerText = `Wheel contains ${wheelParticipants.length} names (Excluding ${currentGiver})`;
+                statusEl.innerText = `Wheel contains ${wheelParticipants.length} names`;
             } else {
                 statusEl.innerText = "Select a giver to spin";
             }
@@ -458,12 +449,13 @@
                 ctx.save();
                 ctx.fillStyle = "white";
                 
-
+                // Dynamic font size based on number of segments to fit 68+ people
+                // Arc length at radius 160 is approx 1000 / count.
                 const fontSize = Math.max(10, Math.min(20, 900 / wheelParticipants.length));
                 ctx.font = 'bold ' + fontSize + 'px Arial';
 
                 ctx.translate(Math.cos(angle + arc / 2) * 160, Math.sin(angle + arc / 2) * 160);
-                ctx.rotate(angle + arc / 2 + Math.PI / 2); 
+                ctx.rotate(angle + arc / 2 + Math.PI / 2); // Rotate text to point outwards
                 const text = wheelParticipants[i];
                 ctx.fillText(text, -ctx.measureText(text).width / 2, 0);
                 ctx.restore();
@@ -472,30 +464,71 @@
             ctx.restore();
         }
 
+        let targetRotation = 0;
+        let initialRotation = 0;
+
         function spinWheel() {
             if (!currentGiver) return;
             if (isSpinning) return;
             
+            // Pick a winner that is NOT the current giver
+            const validCandidates = receivers.filter(r => r !== currentGiver);
+            if (validCandidates.length === 0) {
+                alert("No valid receivers left!");
+                return;
+            }
+            
+            const winner = validCandidates[Math.floor(Math.random() * validCandidates.length)];
+            const winnerIndex = receivers.indexOf(winner);
+            
             isSpinning = true;
             document.getElementById('spinBtn').disabled = true;
-            // Disable giver selection during spin
             const items = document.querySelectorAll('.giver-item');
             items.forEach(item => item.style.pointerEvents = 'none');
             
+            // Calculate target angle to land on winner
+            const arcd = 360 / receivers.length;
+            // Randomize landing position within the segment (0.2 to 0.8 to stay away from edges)
+            const randomOffset = 0.2 + Math.random() * 0.6; 
+            const targetDegreeMod = 360 - (winnerIndex + randomOffset) * arcd;
+            
+            // Current degrees
+            const currentDegrees = startAngle * 180 / Math.PI + 90;
+            
+            // Minimum spins (5 to 10)
+            const spins = 5 + Math.floor(Math.random() * 5);
+            const spinDegrees = spins * 360;
+            
+            // Calculate total degrees to add
+            let finalDegrees = currentDegrees + spinDegrees;
+            const currentMod = finalDegrees % 360;
+            let diff = targetDegreeMod - currentMod;
+            if (diff < 0) diff += 360;
+            
+            finalDegrees += diff;
+            
+            // Convert back to radians for startAngle
+            initialRotation = startAngle;
+            targetRotation = (finalDegrees - 90) * Math.PI / 180;
+            
             spinTime = 0;
-            spinTimeTotal = Math.random() * 2000 + 2000; // 2-4 seconds
+            spinTimeTotal = 3000 + Math.random() * 1000; // 3-4 seconds
             rotateWheel();
         }
 
         function rotateWheel() {
             spinTime += 30;
             if(spinTime >= spinTimeTotal) {
+                startAngle = targetRotation;
+                drawWheel();
                 stopRotateWheel();
                 return;
             }
             
-            const spinAngle = easeOut(spinTime, 0, spinTimeTotal, spinTimeTotal);
-            startAngle += (spinAngle * Math.PI / 180);
+            // Interpolate
+            const change = targetRotation - initialRotation;
+            startAngle = easeOut(spinTime, initialRotation, change, spinTimeTotal);
+            
             drawWheel();
             spinTimeout = requestAnimationFrame(rotateWheel);
         }
@@ -505,9 +538,6 @@
             isSpinning = false;
             
             let wheelParticipants = receivers;
-            if (currentGiver && receivers.filter(r => r !== currentGiver).length > 0) {
-                wheelParticipants = receivers.filter(r => r !== currentGiver);
-            }
             
             const degrees = startAngle * 180 / Math.PI + 90;
             const arcd = 360 / wheelParticipants.length;
