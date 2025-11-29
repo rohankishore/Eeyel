@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eeyel Karangal Machine </title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #c0392b;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .panel {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 300px;
+        }
+
+        #setupPanel {
+            max-width: 400px;
+        }
+
+        #gamePanel {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 70%;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #219150;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background: #eee;
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .delete-btn {
+            background: #c0392b;
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        canvas {
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            margin: 20px 0;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #resultModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .snowflake {
+            color: #fff;
+            font-size: 1em;
+            font-family: Arial;
+            text-shadow: 0 0 1px #000;
+        }
+
+        /* Snow animation */
+        @-webkit-keyframes snowflakes-fall{0%{top:-10%}100%{top:100%}}@-webkit-keyframes snowflakes-shake{0%{-webkit-transform:translateX(0px);transform:translateX(0px)}50%{-webkit-transform:translateX(80px);transform:translateX(80px)}100%{-webkit-transform:translateX(0px);transform:translateX(0px)}}@keyframes snowflakes-fall{0%{top:-10%}100%{top:100%}}@keyframes snowflakes-shake{0%{transform:translateX(0px)}50%{transform:translateX(80px)}100%{transform:translateX(0px)}}.snowflake{position:fixed;top:-10%;z-index:9999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default;-webkit-animation-name:snowflakes-fall,snowflakes-shake;-webkit-animation-duration:10s,3s;-webkit-animation-timing-function:linear,ease-in-out;-webkit-animation-iteration-count:infinite,infinite;-webkit-animation-play-state:running,running;animation-name:snowflakes-fall,snowflakes-shake;animation-duration:10s,3s;animation-timing-function:linear,ease-in-out;animation-iteration-count:infinite,infinite;animation-play-state:running,running}.snowflake:nth-of-type(0){left:1%;-webkit-animation-delay:0s,0s;animation-delay:0s,0s}.snowflake:nth-of-type(1){left:10%;-webkit-animation-delay:1s,1s;animation-delay:1s,1s}.snowflake:nth-of-type(2){left:20%;-webkit-animation-delay:6s,.5s;animation-delay:6s,.5s}.snowflake:nth-of-type(3){left:30%;-webkit-animation-delay:4s,2s;animation-delay:4s,2s}.snowflake:nth-of-type(4){left:40%;-webkit-animation-delay:2s,2s;animation-delay:2s,2s}.snowflake:nth-of-type(5){left:50%;-webkit-animation-delay:8s,3s;animation-delay:8s,3s}.snowflake:nth-of-type(6){left:60%;-webkit-animation-delay:6s,2s;animation-delay:6s,2s}.snowflake:nth-of-type(7){left:70%;-webkit-animation-delay:2.5s,1s;animation-delay:2.5s,1s}.snowflake:nth-of-type(8){left:80%;-webkit-animation-delay:1s,0s;animation-delay:1s,0s}.snowflake:nth-of-type(9){left:90%;-webkit-animation-delay:3s,1.5s;animation-delay:3s,1.5s}
+    </style>
+</head>
+<body>
+    <div class="snowflakes" aria-hidden="true">
+        <div class="snowflake">❅</div><div class="snowflake">❅</div><div class="snowflake">❆</div><div class="snowflake">❄</div><div class="snowflake">❅</div><div class="snowflake">❆</div><div class="snowflake">❄</div><div class="snowflake">❅</div><div class="snowflake">❆</div><div class="snowflake">❄</div>
+    </div>
+
+    <h1>🎄 Christmas Prize Exchange 🎁</h1>
+
+    <div class="container">
+        <!-- Setup Panel -->
+        <div id="setupPanel" class="panel">
+            <h2>Add Participants</h2>
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <input type="text" id="nameInput" placeholder="Enter name..." onkeypress="handleEnter(event)">
+                <button onclick="addName()">Add</button>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <textarea id="bulkInput" placeholder="Or paste list of names here (one per line)..." style="width: 100%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; resize: vertical; font-family: inherit;"></textarea>
+                <button onclick="addBulkNames()" style="width: 100%; margin-top: 5px; background-color: #3498db;">Add List</button>
+            </div>
+            <ul id="nameList"></ul>
+            <button onclick="startGame()" style="width: 100%; margin-top: 20px; background-color: #c0392b;">Start Exchange</button>
+        </div>
+
+        <!-- Game Panel -->
+        <div id="gamePanel" class="panel">
+            <h2>Spin the Wheel!</h2>
+            
+            <div style="width: 100%; margin-bottom: 20px;">
+                <label for="giverSelect"><strong>Who is spinning? (The Giver)</strong></label>
+                <select id="giverSelect" onchange="updateWheelForGiver()">
+                    <option value="">-- Select a Name --</option>
+                </select>
+            </div>
+
+            <div style="position: relative;">
+                <canvas id="wheelCanvas" width="500" height="500"></canvas>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid #c0392b; margin-top: -230px; z-index: 10;"></div>
+            </div>
+
+            <button id="spinBtn" onclick="spinWheel()" disabled style="font-size: 20px; padding: 15px 40px;">SPIN!</button>
+            
+            <div style="margin-top: 20px;">
+                <h3>History:</h3>
+                <ul id="historyList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div id="resultModal">
+        <div class="modal-content">
+            <h2 id="resultTitle">Result</h2>
+            <p id="resultText" style="font-size: 24px; margin: 20px 0;"></p>
+            <button onclick="closeModal()">Continue</button>
+        </div>
+    </div>
+
+    <script>
+        // Pre-fill with numbers 1 to 68
+        let participants = Array.from({length: 68}, (_, i) => (i + 1).toString());
+        let givers = [];
+        let receivers = [];
+        let currentGiver = null;
+        
+        // Wheel variables
+        let canvas = document.getElementById('wheelCanvas');
+        let ctx = canvas.getContext('2d');
+        let currentRotation = 0;
+        let isSpinning = false;
+        let spinTimeout = null;
+        let arc = 0;
+        let startAngle = 0;
+        let spinTime = 0;
+        let spinTimeTotal = 0;
+
+        const colors = ["#FF5733", "#33FF57", "#3357FF", "#F333FF", "#FF33A1", "#33FFF5", "#F5FF33", "#FF8C33"];
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') addName();
+        }
+
+        function addName() {
+            const input = document.getElementById('nameInput');
+            const name = input.value.trim();
+            if (name && !participants.includes(name)) {
+                participants.push(name);
+                renderNameList();
+                input.value = '';
+            }
+        }
+
+        function addBulkNames() {
+            const textarea = document.getElementById('bulkInput');
+            // Split by newline or comma
+            const names = textarea.value.split(/\n|,/).map(n => n.trim()).filter(n => n);
+            
+            let addedCount = 0;
+            names.forEach(name => {
+                if (name && !participants.includes(name)) {
+                    participants.push(name);
+                    addedCount++;
+                }
+            });
+            
+            if (addedCount > 0) {
+                renderNameList();
+                textarea.value = '';
+                // Optional: alert(`Added ${addedCount} participants!`);
+            }
+        }
+
+        function removeName(name) {
+            participants = participants.filter(p => p !== name);
+            renderNameList();
+        }
+
+        function renderNameList() {
+            const list = document.getElementById('nameList');
+            list.innerHTML = participants.map(p => `
+                <li>
+                    ${p}
+                    <button class="delete-btn" onclick="removeName('${p}')">✕</button>
+                </li>
+            `).join('');
+        }
+
+        function startGame() {
+            if (participants.length < 2) {
+                alert("Need at least 2 participants!");
+                return;
+            }
+            
+            givers = [...participants];
+            receivers = [...participants];
+            
+            document.getElementById('setupPanel').style.display = 'none';
+            document.getElementById('gamePanel').style.display = 'flex';
+            
+            updateGiverSelect();
+            drawWheel();
+        }
+
+        function updateGiverSelect() {
+            const select = document.getElementById('giverSelect');
+            select.innerHTML = '<option value="">-- Select a Name --</option>' + 
+                givers.map(g => `<option value="${g}">${g}</option>`).join('');
+            
+            document.getElementById('spinBtn').disabled = true;
+        }
+
+        function updateWheelForGiver() {
+            const select = document.getElementById('giverSelect');
+            currentGiver = select.value;
+            document.getElementById('spinBtn').disabled = !currentGiver;
+            
+            // We redraw the wheel. 
+            // Note: The user said "exclude selected guy from list (but not from wheel)".
+            // However, you can't give to yourself. 
+            // So visually we might want to show everyone, but if it lands on self, we respin?
+            // Or we can just filter them out of the wheel for this turn to avoid awkward "You got yourself" moments.
+            // Let's try to keep them on the wheel if possible, but for logic sake, it's better to filter them out 
+            // so the spin is always valid. 
+            // BUT, strictly following "not from wheel", I will include them and handle the collision.
+            
+            drawWheel();
+        }
+
+        function drawWheel() {
+            if (receivers.length === 0) return;
+
+            // Filter out current giver from potential receivers for the wheel visual?
+            // If we strictly follow "not from wheel", we draw everyone in 'receivers'.
+            // If we want to prevent self-giving, we should probably filter.
+            // Let's filter for the visual wheel to ensure a valid spin every time.
+            // It's a better user experience than "Oops, you got yourself, spin again".
+            
+            let wheelParticipants = receivers;
+            if (currentGiver) {
+                wheelParticipants = receivers.filter(r => r !== currentGiver);
+            }
+            
+            // If everyone else has received except the giver, and the giver is the only one left in receivers...
+            // Then the giver MUST give to themselves? That's a deadlock.
+            // In a perfect circle exchange, the last person gives to the first person (or whoever is left).
+            // If A, B, C. 
+            // A gives to B. (Receivers: A, C).
+            // B gives to C. (Receivers: A).
+            // C gives to A. (Receivers: []).
+            // This works.
+            // What if:
+            // A gives to B. (Receivers: A, C).
+            // C gives to A. (Receivers: C).
+            // B gives to... C. (Receivers: []).
+            // This also works.
+            // The only deadlock is if the LAST giver is also the ONLY receiver left.
+            // e.g. A, B.
+            // A gives to A (blocked). A gives to B. (Receivers: A).
+            // B gives to A.
+            
+            // So filtering is safe unless it's the last person and they are the only receiver.
+            // But if they are the last person, they must be the only receiver left?
+            // No, if A gives to B, B is out of receivers.
+            // If B gives to A, A is out of receivers.
+            // Everyone happy.
+            
+            // Edge case: 3 people: A, B, C.
+            // A gives to B. (Receivers: A, C).
+            // B gives to A. (Receivers: C).
+            // C is left to give. Receivers left: C.
+            // C cannot give to C. Deadlock!
+            
+            // To avoid deadlock in these casual apps, we usually just let it happen or warn.
+            // Or we just allow the spin and if it's self, we say "Swap with someone" or just "Spin again" (which is infinite loop).
+            // For this simple app, I will filter. If wheelParticipants is empty, we have a problem.
+            
+            if (wheelParticipants.length === 0 && receivers.length > 0) {
+                // Deadlock case: The only person left to receive is the current giver.
+                // We'll just show the giver on the wheel and let them win their own gift? 
+                // Or just show an alert.
+                wheelParticipants = receivers; 
+            }
+
+            arc = Math.PI * 2 / wheelParticipants.length;
+            ctx.clearRect(0, 0, 500, 500);
+            
+            ctx.save();
+            ctx.translate(250, 250);
+            
+            for(let i = 0; i < wheelParticipants.length; i++) {
+                const angle = startAngle + i * arc;
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.beginPath();
+                ctx.arc(0, 0, 230, angle, angle + arc, false);
+                ctx.arc(0, 0, 0, angle + arc, angle, true);
+                ctx.fill();
+                
+                ctx.save();
+                ctx.fillStyle = "white";
+                
+                // Dynamic font size based on number of segments to fit 68+ people
+                // Arc length at radius 160 is approx 1000 / count.
+                const fontSize = Math.max(10, Math.min(20, 900 / wheelParticipants.length));
+                ctx.font = 'bold ' + fontSize + 'px Arial';
+
+                ctx.translate(Math.cos(angle + arc / 2) * 160, Math.sin(angle + arc / 2) * 160);
+                ctx.rotate(angle + arc / 2 + Math.PI / 2); // Rotate text to point outwards
+                const text = wheelParticipants[i];
+                ctx.fillText(text, -ctx.measureText(text).width / 2, 0);
+                ctx.restore();
+            }
+            
+            ctx.restore();
+        }
+
+        function spinWheel() {
+            if (!currentGiver) return;
+            if (isSpinning) return;
+            
+            isSpinning = true;
+            document.getElementById('spinBtn').disabled = true;
+            document.getElementById('giverSelect').disabled = true;
+            
+            spinTime = 0;
+            spinTimeTotal = Math.random() * 3000 + 4000; // 4-7 seconds
+            rotateWheel();
+        }
+
+        function rotateWheel() {
+            spinTime += 30;
+            if(spinTime >= spinTimeTotal) {
+                stopRotateWheel();
+                return;
+            }
+            
+            const spinAngle = easeOut(spinTime, 0, spinTimeTotal, spinTimeTotal);
+            startAngle += (spinAngle * Math.PI / 180);
+            drawWheel();
+            spinTimeout = requestAnimationFrame(rotateWheel);
+        }
+
+        function stopRotateWheel() {
+            cancelAnimationFrame(spinTimeout);
+            isSpinning = false;
+            
+            let wheelParticipants = receivers;
+            if (currentGiver && receivers.filter(r => r !== currentGiver).length > 0) {
+                wheelParticipants = receivers.filter(r => r !== currentGiver);
+            }
+            
+            const degrees = startAngle * 180 / Math.PI + 90;
+            const arcd = 360 / wheelParticipants.length;
+            const index = Math.floor((360 - degrees % 360) / arcd);
+            
+            const winner = wheelParticipants[index];
+            
+            showResult(winner);
+        }
+
+        function easeOut(t, b, c, d) {
+            const ts = (t/=d)*t;
+            const tc = ts*t;
+            return b+c*(tc + -3*ts + 3*t);
+        }
+
+        function showResult(winner) {
+            const modal = document.getElementById('resultModal');
+            const title = document.getElementById('resultTitle');
+            const text = document.getElementById('resultText');
+            
+            title.innerText = "🎉 We have a match! 🎉";
+            text.innerHTML = `<strong>${currentGiver}</strong> will give a gift to <strong>${winner}</strong>!`;
+            
+            modal.style.display = 'flex';
+            
+            // Update state
+            // Remove giver from givers list
+            givers = givers.filter(g => g !== currentGiver);
+            
+            // Remove winner from receivers list (they got a prize)
+            receivers = receivers.filter(r => r !== winner);
+            
+            // Add to history
+            const historyList = document.getElementById('historyList');
+            const li = document.createElement('li');
+            li.innerHTML = `${currentGiver} ➔ ${winner}`;
+            historyList.appendChild(li);
+        }
+
+        function closeModal() {
+            document.getElementById('resultModal').style.display = 'none';
+            document.getElementById('giverSelect').disabled = false;
+            document.getElementById('giverSelect').value = "";
+            currentGiver = null;
+            
+            updateGiverSelect();
+            
+            if (givers.length === 0) {
+                alert("Exchange Complete! Merry Christmas!");
+                // Optional: Reset game
+            } else {
+                drawWheel();
+            }
+        }
+
+        // Show the pre-filled list on load
+        renderNameList();
+    </script>
+</body>
+</html>
