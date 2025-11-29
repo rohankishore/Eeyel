@@ -560,6 +560,10 @@
             
             // Remove winner from receivers list (they got a prize)
             receivers = receivers.filter(r => r !== winner);
+
+            // Log selected numbers
+            const selectedNumbers = participants.filter(p => !receivers.includes(p));
+            console.log("Updated list of selected numbers (Received Gift):", selectedNumbers);
         }
 
         function closeModal() {
